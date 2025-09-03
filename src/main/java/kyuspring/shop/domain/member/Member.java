@@ -9,9 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
-import org.springframework.util.Assert;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
+import static org.springframework.util.Assert.state;
 
 @Entity
 @Getter
@@ -23,7 +23,7 @@ public class Member {
     private Long id;
 
     @NaturalId
-    private String email;
+    private Email email;
 
     private String nickname;
 
@@ -31,12 +31,12 @@ public class Member {
 
     private MemberStatus status;
 
-    public static Member register(String email, String nickname, String passwordHash) {
+    public static Member register(MemberRegisterRequest registerRequest, PasswordEncoder passwordEncoder) {
         Member member = new Member();
 
-        member.email = Objects.requireNonNull(email);
-        member.nickname = Objects.requireNonNull(nickname);
-        member.passwordHash = Objects.requireNonNull(passwordHash);
+        member.email = new Email(requireNonNull(registerRequest.email()));
+        member.nickname = requireNonNull(registerRequest.nickname());
+        member.passwordHash = requireNonNull(passwordEncoder.encode(registerRequest.password()));
 
         member.status = MemberStatus.ACTIVE;
 
@@ -44,8 +44,24 @@ public class Member {
     }
 
     public void deactivate() {
-        Assert.state(this.status == MemberStatus.ACTIVE, "ACTIVE 상태가 아닙니다");
+        state(this.status == MemberStatus.ACTIVE, "ACTIVE 상태가 아닙니다");
 
         this.status = MemberStatus.DEACTIVATED;
+    }
+
+    public boolean verifyPassword(String password, PasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(password, this.passwordHash);
+    }
+
+    public void changeNickname(String nickname) {
+        this.nickname = requireNonNull(nickname);
+    }
+
+    public void changePassword(String password, PasswordEncoder passwordEncoder) {
+        this.passwordHash = passwordEncoder.encode(requireNonNull(password));
+    }
+
+    public boolean isActive() {
+        return this.status == MemberStatus.ACTIVE;
     }
 }
