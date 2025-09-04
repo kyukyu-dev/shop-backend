@@ -41,16 +41,16 @@ record MemberRegisterTest(EntityManager entityManager, MemberRegister memberRegi
         final String shortString = "a";
         final String longString = "a".repeat(200);
 
-        testInvalidRequest(new MemberRegisterRequest("invalid email", "nickname", "password"));
+        checkValidation(new MemberRegisterRequest("invalid email", "nickname", "password"));
 
-        testInvalidRequest(new MemberRegisterRequest("test@email.com", shortString, "password"));
-        testInvalidRequest(new MemberRegisterRequest("test@email.com", longString, "password"));
+        checkValidation(new MemberRegisterRequest("test@email.com", shortString, "password"));
+        checkValidation(new MemberRegisterRequest("test@email.com", longString, "password"));
 
-        testInvalidRequest(new MemberRegisterRequest("test@email.com", "nickname", shortString));
-        testInvalidRequest(new MemberRegisterRequest("test@email.com", "nickname", longString));
+        checkValidation(new MemberRegisterRequest("test@email.com", "nickname", shortString));
+        checkValidation(new MemberRegisterRequest("test@email.com", "nickname", longString));
     }
 
-    private void testInvalidRequest(MemberRegisterRequest invalidRequest) {
+    private void checkValidation(MemberRegisterRequest invalidRequest) {
         assertThatThrownBy(() -> memberRegister.register(invalidRequest))
                 .isInstanceOf(ConstraintViolationException.class);
     }
