@@ -1,9 +1,6 @@
 package kyuspring.shop.domain.member;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,24 +20,32 @@ public class Member {
     private Long id;
 
     @NaturalId
+    @Embedded
     private Email email;
 
     private String nickname;
 
     private String passwordHash;
 
+    @Enumerated(EnumType.STRING)
     private MemberStatus status;
 
     public static Member register(MemberRegisterRequest registerRequest, PasswordEncoder passwordEncoder) {
         Member member = new Member();
 
-        member.email = new Email(requireNonNull(registerRequest.email()));
+        member.email = new Email(requireNonNull(registerRequest.emailAddress()));
         member.nickname = requireNonNull(registerRequest.nickname());
         member.passwordHash = requireNonNull(passwordEncoder.encode(registerRequest.password()));
 
-        member.status = MemberStatus.ACTIVE;
+        member.status = MemberStatus.PENDING;
 
         return member;
+    }
+
+    public void activate() {
+        state(this.status == MemberStatus.PENDING, "PENDING 상태가 아닙니다.");
+
+        this.status = MemberStatus.ACTIVE;
     }
 
     public void deactivate() {

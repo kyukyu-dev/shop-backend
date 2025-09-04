@@ -3,6 +3,8 @@ package kyuspring.shop.domain.member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static kyuspring.shop.domain.member.MemberFixture.createMemberRegisterRequest;
+import static kyuspring.shop.domain.member.MemberFixture.createPasswordEncoder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -12,38 +14,55 @@ class MemberTest {
 
     @BeforeEach
     void setUp() {
-        passwordEncoder = new PasswordEncoder() {
-            @Override
-            public String encode(String password) {
-                return password.toUpperCase();
-            }
-
-            @Override
-            public boolean matches(String password, String passwordHash) {
-                return encode(password).equals(passwordHash);
-            }
-        };
+        passwordEncoder = createPasswordEncoder();
 
         member = Member.register(
-                new MemberRegisterRequest("test@email.com", "nickname", "password"),
+                createMemberRegisterRequest(),
                 passwordEncoder
         );
     }
 
     @Test
     void registerMember() {
+        assertThat(member.getStatus()).isEqualTo(MemberStatus.PENDING);
+    }
+
+    @Test
+    void activateMember() {
+        assertThat(member.isActive()).isFalse();
+
+        member.activate();
+
         assertThat(member.getStatus()).isEqualTo(MemberStatus.ACTIVE);
+        assertThat(member.isActive()).isTrue();
+    }
+
+    @Test
+    void activateMemberFail() {
+        member.activate();
+
+        assertThatThrownBy(() -> member.activate())
+            .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     void deactivateMember() {
+        assertThat(member.isActive()).isFalse();
+
+        member.activate();
+
+        assertThat(member.isActive()).isTrue();
+
         member.deactivate();
 
         assertThat(member.getStatus()).isEqualTo(MemberStatus.DEACTIVATED);
+        assertThat(member.isActive()).isFalse();
     }
 
     @Test
     void deactivateMemberFail() {
+        member.activate();
+
         member.deactivate();
 
         assertThatThrownBy(() -> member.deactivate())
@@ -78,7 +97,7 @@ class MemberTest {
     void invalidEmail() {
         assertThatThrownBy(() ->
                 Member.register(
-                        new MemberRegisterRequest("invalid email", "nickname", "password"),
+                        createMemberRegisterRequest("invalid email"),
                         passwordEncoder
                 )
         ).isInstanceOf(IllegalArgumentException.class);
