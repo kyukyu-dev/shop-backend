@@ -1,5 +1,6 @@
 package kyuspring.shop.domain.member;
 
+import kyuspring.shop.domain.shared.Email;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

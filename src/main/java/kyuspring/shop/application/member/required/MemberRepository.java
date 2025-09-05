@@ -1,7 +1,7 @@
 package kyuspring.shop.application.member.required;
 
-import kyuspring.shop.domain.member.Email;
 import kyuspring.shop.domain.member.Member;
+import kyuspring.shop.domain.shared.Email;
 import org.springframework.data.repository.Repository;
 
 import java.util.Optional;

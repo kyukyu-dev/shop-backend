@@ -1,7 +1,7 @@
 package kyuspring.shop.adapter.integration;
 
 import kyuspring.shop.application.member.required.EmailSender;
-import kyuspring.shop.domain.member.Email;
+import kyuspring.shop.domain.shared.Email;
 import org.springframework.context.annotation.Fallback;
 import org.springframework.stereotype.Component;
 

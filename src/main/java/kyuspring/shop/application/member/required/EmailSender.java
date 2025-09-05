@@ -1,6 +1,6 @@
 package kyuspring.shop.application.member.required;
 
-import kyuspring.shop.domain.member.Email;
+import kyuspring.shop.domain.shared.Email;
 
 /**
  * 이메일을 발송한다

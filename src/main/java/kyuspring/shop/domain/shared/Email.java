@@ -1,4 +1,4 @@
-package kyuspring.shop.domain.member;
+package kyuspring.shop.domain.shared;
 
 import jakarta.persistence.Embeddable;
 
