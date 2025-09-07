@@ -43,6 +43,18 @@
         </attributes>
     </entity>
 
+    <entity class="kyuspring.shop.domain.member.MemberDetail">
+        <table name="member_detail">
+        </table>
+        <attributes>
+            <basic name="registeredAt">
+                <column nullable="false"/>
+            </basic>
+            <basic name="activatedAt"/>
+            <basic name="deactivatedAt"/>
+        </attributes>
+    </entity>
+
     <embeddable class="kyuspring.shop.domain.shared.Email">
         <attributes>
             <basic name="address">
