@@ -65,6 +65,8 @@ public class Member extends AbstractEntity {
     }
 
     public void changeNickname(String nickname) {
+        state(this.status == MemberStatus.ACTIVE, "등록 완료 상태에서만 닉네임을 변경할 수 있습니다.");
+
         this.nickname = requireNonNull(nickname);
     }
 

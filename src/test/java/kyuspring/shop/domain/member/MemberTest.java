@@ -83,10 +83,19 @@ class MemberTest {
     @Test
     void changeNickname() {
         assertThat(member.getNickname()).isEqualTo("nickname");
+        member.activate();
 
         member.changeNickname("newNickname");
 
         assertThat(member.getNickname()).isEqualTo("newNickname");
+    }
+
+    @Test
+    void changeNicknameFail() {
+        assertThat(member.getNickname()).isEqualTo("nickname");
+
+        assertThatThrownBy(() -> member.changeNickname("newNickname"))
+                .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
