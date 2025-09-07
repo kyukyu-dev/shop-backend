@@ -1,9 +1,9 @@
 package kyuspring.shop.domain.member;
 
-import jakarta.persistence.Embedded;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToOne;
 import kyuspring.shop.domain.AbstractEntity;
 import kyuspring.shop.domain.shared.Email;
 import lombok.AccessLevel;
@@ -17,7 +17,7 @@ import static org.springframework.util.Assert.state;
 
 @Entity
 @Getter
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = "detail")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends AbstractEntity {
     @NaturalId
@@ -26,8 +26,11 @@ public class Member extends AbstractEntity {
     private String nickname;
 
     private String passwordHash;
-    
+
     private MemberStatus status;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private MemberDetail detail;
 
     public static Member register(MemberRegisterRequest registerRequest, PasswordEncoder passwordEncoder) {
         Member member = new Member();
@@ -38,6 +41,8 @@ public class Member extends AbstractEntity {
 
         member.status = MemberStatus.PENDING;
 
+        member.detail = MemberDetail.create();
+
         return member;
     }
 
@@ -45,12 +50,14 @@ public class Member extends AbstractEntity {
         state(this.status == MemberStatus.PENDING, "PENDING 상태가 아닙니다.");
 
         this.status = MemberStatus.ACTIVE;
+        this.detail.activate();
     }
 
     public void deactivate() {
         state(this.status == MemberStatus.ACTIVE, "ACTIVE 상태가 아닙니다");
 
         this.status = MemberStatus.DEACTIVATED;
+        this.detail.deactivate();
     }
 
     public boolean verifyPassword(String password, PasswordEncoder passwordEncoder) {

@@ -65,5 +65,23 @@ record MemberRegisterTest(EntityManager entityManager, MemberRegister memberRegi
         entityManager.flush();
 
         assertThat(member.getStatus()).isEqualTo(MemberStatus.ACTIVE);
+        assertThat(member.getDetail().getActivatedAt()).isNotNull();
+    }
+
+    @Test
+    void deactivate() {
+        Member member = memberRegister.register(createMemberRegisterRequest());
+        entityManager.flush();
+        entityManager.clear();
+
+        memberRegister.activate(member.getId());
+        entityManager.flush();
+        entityManager.clear();
+
+        member = memberRegister.deactivate(member.getId());
+        entityManager.flush();
+
+        assertThat(member.getStatus()).isEqualTo(MemberStatus.DEACTIVATED);
+        assertThat(member.getDetail().getDeactivatedAt()).isNotNull();
     }
 }

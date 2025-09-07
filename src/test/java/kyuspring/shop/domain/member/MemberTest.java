@@ -25,16 +25,19 @@ class MemberTest {
     @Test
     void registerMember() {
         assertThat(member.getStatus()).isEqualTo(MemberStatus.PENDING);
+        assertThat(member.getDetail().getRegisteredAt()).isNotNull();
     }
 
     @Test
     void activateMember() {
         assertThat(member.isActive()).isFalse();
+        assertThat(member.getDetail().getActivatedAt()).isNull();
 
         member.activate();
 
         assertThat(member.getStatus()).isEqualTo(MemberStatus.ACTIVE);
         assertThat(member.isActive()).isTrue();
+        assertThat(member.getDetail().getActivatedAt()).isNotNull();
     }
 
     @Test
@@ -52,11 +55,13 @@ class MemberTest {
         member.activate();
 
         assertThat(member.isActive()).isTrue();
+        assertThat(member.getDetail().getDeactivatedAt()).isNull();
 
         member.deactivate();
 
         assertThat(member.getStatus()).isEqualTo(MemberStatus.DEACTIVATED);
         assertThat(member.isActive()).isFalse();
+        assertThat(member.getDetail().getDeactivatedAt()).isNotNull();
     }
 
     @Test

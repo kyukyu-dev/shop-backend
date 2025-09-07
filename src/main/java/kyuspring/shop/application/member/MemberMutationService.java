@@ -1,4 +1,4 @@
-package kyuspring.shop.application;
+package kyuspring.shop.application.member;
 
 import jakarta.transaction.Transactional;
 import kyuspring.shop.application.member.provided.MemberFinder;
@@ -42,6 +42,15 @@ public class MemberMutationService implements MemberRegister {
         Member member = memberFinder.find(memberId);
 
         member.activate();
+
+        return memberRepository.save(member);
+    }
+
+    @Override
+    public Member deactivate(Long memberId) {
+        Member member = memberFinder.find(memberId);
+
+        member.deactivate();
 
         return memberRepository.save(member);
     }

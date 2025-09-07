@@ -1,4 +1,4 @@
-package kyuspring.shop.application;
+package kyuspring.shop.application.member;
 
 import jakarta.transaction.Transactional;
 import kyuspring.shop.application.member.provided.MemberFinder;
