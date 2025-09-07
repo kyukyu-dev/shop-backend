@@ -21,14 +21,12 @@ import static org.springframework.util.Assert.state;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends AbstractEntity {
     @NaturalId
-    @Embedded
     private Email email;
 
     private String nickname;
 
     private String passwordHash;
-
-    @Enumerated(EnumType.STRING)
+    
     private MemberStatus status;
 
     public static Member register(MemberRegisterRequest registerRequest, PasswordEncoder passwordEncoder) {
